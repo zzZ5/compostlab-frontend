@@ -13,7 +13,7 @@
         <el-col v-for="row in list" :key="row.id" :span="6">
           <el-card class="box-card">
             <div slot="header" class="clearfix">
-              <router-link :to="{path:'/equipment/detail/' + row.id, query:{experimentId:experimentId}}" class="link-type">
+              <router-link :to="{path:'/equipment/detail/' + row.id, query:{experimentId:experimentId, begin_time:begin_time, end_time:end_time}}" class="link-type">
                 <span class="link-type"> <b> {{ row.name }} </b></span>
               </router-link>
               <el-dropdown trigger="click" style="float: right; padding-top: 0px" @command="handleCommand">
@@ -26,7 +26,7 @@
                   />
                 </span>
                 <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item :command="{command:'chart', equipmentId: row.id}">Chart</el-dropdown-item>
+                  <el-dropdown-item :command="{command:'chart', equipmentId: row.id, begin_time:begin_time, end_time:end_time}">Chart</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
               <small style="padding-left: 5px">({{ row.abbreviation }})</small>
@@ -63,6 +63,8 @@ export default {
   data() {
     return {
       experimentId: '0',
+      begin_time: '',
+      end_time: '',
       list: [],
       loading: false,
       tempRoute: {}
@@ -79,7 +81,7 @@ export default {
   methods: {
     handleCommand(command) {
       if (command.command === 'chart') {
-        this.$router.push({ path: '/equipment/chart/' + command.equipmentId, query: { experimentId: this.experimentId }})
+        this.$router.push({ path: '/equipment/chart/' + command.equipmentId, query: { experimentId: this.experimentId, begin_time: this.begin_time, end_time: this.end_time }})
       }
     },
     drawChart() {
@@ -89,6 +91,8 @@ export default {
       this.loading = true
       fetchExperiment(id).then((response) => {
         this.list = response.data.equipment
+        this.begin_time = response.data.begin_time
+        this.end_time = response.data.end_time
         this.loading = false
       })
     },

@@ -1,13 +1,39 @@
 <template>
-  <div :id="id" :class="className" :style="{height:height,width:width}" />
+  <div class="chart-container">
+    <sticky :z-index="10" class-name="sub-navbar draft">
+      <el-date-picker
+        v-model="interval"
+        type="datetimerange"
+        :picker-options="pickerOptions"
+        range-separator="to"
+        start-placeholder="begin time"
+        end-placeholder="end time"
+        value-format="yyyy-MM-dd HH:mm:ss"
+      />
+      <el-input-number v-model="query.step" :min="1" :max="99999" label="step" />
+      <el-button
+        style="margin-left: 10px"
+        :loading="loading"
+        type="success"
+        @click="submitQuery"
+      >
+        Submit
+      </el-button>
+    </sticky>
+    <div class="chart-main-container">
+      <div :id="id" :class="className" :style="{height:height,width:width}" />
+    </div>
+  </div>
 </template>
 
 <script>
 import echarts from 'echarts'
 import resize from '../mixins/resize'
 import { fetchData } from '@/api/equipment'
+import Sticky from '@/components/Sticky' // 粘性header组件
 
 export default {
+  components: { Sticky },
   mixins: [resize],
   props: {
     className: {
@@ -55,7 +81,7 @@ export default {
           formatter(params) {
             let res = params[0].data[0] + '</br>'
             for (const i in params) {
-              res += params[i].marker + params[i].seriesName + ':' + params[i].data[1] + '</br>'
+              res += params[i].marker + params[i].seriesName + ': ' + params[i].data[1] + params[i].data[2] + '</br>'
             }
             return res
           }
@@ -87,8 +113,37 @@ export default {
           end: 100
         }]
       },
+      pickerOptions: {
+        shortcuts: [{
+          text: 'last week',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: 'last month',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: 'last three month',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
+            picker.$emit('pick', [start, end])
+          }
+        }]
+      },
+      loading: false,
       experimentId: '0',
       equipmentId: '0',
+      interval: [],
       query: {
         experiment: '0',
         step: 1,
@@ -125,6 +180,11 @@ export default {
   },
   created() {
     this.experimentId = this.$route.query && this.$route.query.experimentId
+    if (this.$route.query.begin_time && this.$route.query.end_time) {
+      this.interval.push(this.$route.query.begin_time)
+      this.interval.push(this.$route.query.end_time)
+    }
+    // this.query.step = this.$route.query && this.$route.query.step
     this.equipmentId = this.$route.params && this.$route.params.equipmentId
     this.query.experiment = this.experimentId
     this.tempRoute = Object.assign({}, this.$route)
@@ -146,7 +206,7 @@ export default {
             data: []
           }
           element.data.forEach(i => {
-            series.data.push([i.measured_time, i.value])
+            series.data.push([i.measured_time, i.value, element.unit])
           })
           tempSeries.push(series)
         })
@@ -157,6 +217,13 @@ export default {
     initChart() {
       this.chart = echarts.init(document.getElementById(this.id))
       this.chart.setOption(this.option)
+    },
+    submitQuery() {
+      this.loading = true
+      this.query.begin_time = this.interval[0].toLocaleString()
+      this.query.end_time = this.interval[1].toLocaleString()
+      this.fetchData()
+      this.loading = false
     },
     setTagsViewTitle() {
       const title = 'Equipment Chart'
@@ -172,3 +239,14 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+@import "~@/styles/mixin.scss";
+
+.chart-container {
+  position: relative;
+  .chart-main-container {
+    height: 90%;
+  }
+}
+</style>

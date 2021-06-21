@@ -1,6 +1,6 @@
 <template>
   <div class="chartConfig-container">
-    <div class="chartConfig-main-container">
+    <div v-loading="loading" class="chartConfig-main-container">
       <el-form label-width="80px">
         <div class="postInfo-container">
           <el-tree
@@ -28,8 +28,7 @@ export default {
         // children: 'zones',
         isLeaf: 'leaf'
       },
-      experimentDetail: {
-      },
+      loading: false,
       equipment: {},
       experimentId: '0',
       tempRoute: {}
@@ -37,7 +36,7 @@ export default {
   },
   created() {
     this.experimentId = this.$route.params && this.$route.params.experimentId
-    this.fetchData(this.experimentId)
+    // this.fetchData(this.experimentId)
     this.tempRoute = Object.assign({}, this.$route)
     this.setTagsViewTitle()
     this.setPageTitle()
@@ -47,41 +46,20 @@ export default {
       this.loading = true
       fetchExperiment(id).then((response) => {
         this.equipment = response.data.equipment
-        console.log(Array.from(this.equipment))
         this.loading = false
       })
     },
 
     loadNode(node, resolve) {
       if (node.level === 0) {
-        console.log(this.equipment)
-        return resolve(Array.from(this.equipment))
+        this.loading = true
+        fetchExperiment(this.experimentId).then((response) => {
+          this.equipment = response.data.equipment
+          console.log(response.data.equipment)
+          this.loading = false
+          resolve(response.data.equipment)
+        })
       }
-      if (node.level > 3) return resolve([])
-
-      var hasChild
-      if (node.data.name === 'region1') {
-        hasChild = true
-      } else if (node.data.name === 'region2') {
-        hasChild = false
-      } else {
-        hasChild = Math.random() > 0.5
-      }
-
-      setTimeout(() => {
-        var data
-        if (hasChild) {
-          data = [{
-            name: 'zone' + this.count++
-          }, {
-            name: 'zone' + this.count++
-          }]
-        } else {
-          data = []
-        }
-
-        resolve(data)
-      }, 500)
     },
 
     setTagsViewTitle() {
