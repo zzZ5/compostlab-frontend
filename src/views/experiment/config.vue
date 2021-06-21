@@ -41,6 +41,19 @@
             value-format="yyyy-MM-dd HH:mm:ss"
           />
         </el-form-item>
+        <el-form-item
+          style="margin-bottom: 40px"
+          label-width="150px"
+          label="Step:"
+        >
+          <el-input-number
+            v-model="step"
+            style="margin-left: 10%"
+            :min="1"
+            :max="99999"
+            label="step"
+          />
+        </el-form-item>
       </el-form>
     </div>
   </div>
@@ -61,35 +74,40 @@ export default {
         isLeaf: 'leaf'
       },
       pickerOptions: {
-        shortcuts: [{
-          text: 'last week',
-          onClick(picker) {
-            const end = new Date()
-            const start = new Date()
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
-            picker.$emit('pick', [start, end])
+        shortcuts: [
+          {
+            text: 'last week',
+            onClick(picker) {
+              const end = new Date()
+              const start = new Date()
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
+              picker.$emit('pick', [start, end])
+            }
+          },
+          {
+            text: 'last month',
+            onClick(picker) {
+              const end = new Date()
+              const start = new Date()
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
+              picker.$emit('pick', [start, end])
+            }
+          },
+          {
+            text: 'last three month',
+            onClick(picker) {
+              const end = new Date()
+              const start = new Date()
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
+              picker.$emit('pick', [start, end])
+            }
           }
-        }, {
-          text: 'last month',
-          onClick(picker) {
-            const end = new Date()
-            const start = new Date()
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
-            picker.$emit('pick', [start, end])
-          }
-        }, {
-          text: 'last three month',
-          onClick(picker) {
-            const end = new Date()
-            const start = new Date()
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
-            picker.$emit('pick', [start, end])
-          }
-        }]
+        ]
       },
       loading: false,
       equipment: [],
       interval: [],
+      step: 1,
       experimentId: '0',
       tempRoute: {}
     }
@@ -116,8 +134,16 @@ export default {
     },
     submitForm() {
       const sensor = []
-      this.getCheckedNodes().forEach(element => {
+      this.getCheckedNodes().forEach((element) => {
         sensor.push(element.id)
+      })
+      this.$router.push({
+        path: '/experiment/chart/' + this.experimentId,
+        query: {
+          sensor: sensor,
+          begin_time: this.begin_time,
+          end_time: this.end_time
+        }
       })
       console.log(sensor)
     },
