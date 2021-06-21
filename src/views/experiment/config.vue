@@ -1,15 +1,46 @@
 <template>
   <div class="chartConfig-container">
+    <sticky :z-index="10" class-name="sub-navbar draft">
+      <el-button
+        :loading="loading"
+        style="margin-left: 10px"
+        type="success"
+        @click="submitForm"
+      >
+        Submit
+      </el-button>
+    </sticky>
     <div v-loading="loading" class="chartConfig-main-container">
       <el-form label-width="80px">
-        <div class="postInfo-container">
+        <el-form-item
+          style="margin-bottom: 40px"
+          label-width="150px"
+          label="Equipment:"
+        >
           <el-tree
+            ref="tree"
+            style="margin-left: 10%"
+            :data="equipment"
             :props="props"
-            :load="loadNode"
-            lazy
             show-checkbox
           />
-        </div>
+        </el-form-item>
+        <el-form-item
+          style="margin-bottom: 40px"
+          label-width="150px"
+          label="Datetime interval:"
+        >
+          <el-date-picker
+            v-model="interval"
+            style="margin-left: 10%"
+            type="datetimerange"
+            :picker-options="pickerOptions"
+            range-separator="to"
+            start-placeholder="begin time"
+            end-placeholder="end time"
+            value-format="yyyy-MM-dd HH:mm:ss"
+          />
+        </el-form-item>
       </el-form>
     </div>
   </div>
@@ -17,26 +48,55 @@
 
 <script>
 import { fetchExperiment } from '@/api/experiment'
+import Sticky from '@/components/Sticky'
 
 export default {
   name: 'Config',
-  components: { },
+  components: { Sticky },
   data() {
     return {
       props: {
         label: 'name',
-        // children: 'zones',
+        children: 'sensor',
         isLeaf: 'leaf'
       },
+      pickerOptions: {
+        shortcuts: [{
+          text: 'last week',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: 'last month',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: 'last three month',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
+            picker.$emit('pick', [start, end])
+          }
+        }]
+      },
       loading: false,
-      equipment: {},
+      equipment: [],
+      interval: [],
       experimentId: '0',
       tempRoute: {}
     }
   },
   created() {
     this.experimentId = this.$route.params && this.$route.params.experimentId
-    // this.fetchData(this.experimentId)
+    this.fetchData(this.experimentId)
     this.tempRoute = Object.assign({}, this.$route)
     this.setTagsViewTitle()
     this.setPageTitle()
@@ -45,23 +105,22 @@ export default {
     fetchData(id) {
       this.loading = true
       fetchExperiment(id).then((response) => {
+        this.interval.push(response.data.begin_time)
+        this.interval.push(response.data.end_time)
         this.equipment = response.data.equipment
         this.loading = false
       })
     },
-
-    loadNode(node, resolve) {
-      if (node.level === 0) {
-        this.loading = true
-        fetchExperiment(this.experimentId).then((response) => {
-          this.equipment = response.data.equipment
-          console.log(response.data.equipment)
-          this.loading = false
-          resolve(response.data.equipment)
-        })
-      }
+    getCheckedNodes() {
+      return this.$refs.tree.getCheckedNodes(true)
     },
-
+    submitForm() {
+      const sensor = []
+      this.getCheckedNodes().forEach(element => {
+        sensor.push(element.id)
+      })
+      console.log(sensor)
+    },
     setTagsViewTitle() {
       const title = 'Chart Config'
       const route = Object.assign({}, this.tempRoute, {
