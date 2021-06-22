@@ -1,22 +1,32 @@
 <template>
   <div class="experimentDetail-container">
     <sticky :z-index="10" class-name="sub-navbar draft">
-      <el-button
-        style="margin-left: 10px"
-        @click="drawChart"
-      >
-        Draw
-      </el-button>
+      <el-button style="margin-left: 10px" @click="drawChart"> Draw </el-button>
     </sticky>
     <div v-loading class="experimentDetail-main-container">
       <el-row v-loading="loading" :gutter="20" style="margin-top: 50px">
         <el-col v-for="row in list" :key="row.id" :span="6">
           <el-card class="box-card">
             <div slot="header" class="clearfix">
-              <router-link :to="{path:'/equipment/detail/' + row.id, query:{experimentId:experimentId, begin_time:begin_time, end_time:end_time}}" class="link-type">
-                <span class="link-type"> <b> {{ row.name }} </b></span>
+              <router-link
+                :to="{
+                  path: '/equipment/detail/' + row.id,
+                  query: {
+                    experimentId: experimentId,
+                    begin_time: begin_time,
+                    end_time: end_time,
+                  },
+                }"
+                class="link-type"
+              >
+                <span class="link-type">
+                  <b> {{ row.name }} </b></span>
               </router-link>
-              <el-dropdown trigger="click" style="float: right; padding-top: 0px" @command="handleCommand">
+              <el-dropdown
+                trigger="click"
+                style="float: right; padding-top: 0px"
+                @command="handleCommand"
+              >
                 <span class="el-dropdown-link">
                   <el-button
                     plain
@@ -26,21 +36,41 @@
                   />
                 </span>
                 <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item :command="{command:'chart', equipmentId: row.id, begin_time:begin_time, end_time:end_time}">Chart</el-dropdown-item>
+                  <el-dropdown-item
+                    :command="{
+                      command: 'chart',
+                      equipmentId: row.id,
+                      begin_time: begin_time,
+                      end_time: end_time,
+                    }"
+                  >Chart</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
               <small style="padding-left: 5px">({{ row.abbreviation }})</small>
-              <el-tag size="small" style="margin-left: 15px"> {{ row.type }} </el-tag>
+              <el-tag size="small" style="margin-left: 15px">
+                {{ row.type }}
+              </el-tag>
             </div>
             <div class="text item">
               <span>Sensors:</span>
               <div v-for="sensor in row.sensor" :key="sensor.id">
                 <div style="margin: 6px 20px">
-                  <router-link :to="{ path: '/sensor/detail/' + sensor.id, query:{experimentId:experimentId}}" class="link-type">
-                    <span class="link-type"> <b> {{ sensor.name }} </b></span>
+                  <router-link
+                    :to="{
+                      path: '/sensor/detail/' + sensor.id,
+                      query: { experimentId: experimentId },
+                    }"
+                    class="link-type"
+                  >
+                    <span class="link-type">
+                      <b> {{ sensor.name }} </b></span>
                   </router-link>
-                  <small style="padding-left: 5px">({{ sensor.abbreviation }})</small>
-                  <el-tag size="small" type="success" style="margin-left: 10px"> {{ sensor.type }} </el-tag>
+                  <small
+                    style="padding-left: 5px"
+                  >({{ sensor.abbreviation }})</small>
+                  <el-tag size="small" type="success" style="margin-left: 10px">
+                    {{ sensor.type }}
+                  </el-tag>
                 </div>
               </div>
             </div>
@@ -81,7 +111,13 @@ export default {
   methods: {
     handleCommand(command) {
       if (command.command === 'chart') {
-        this.$router.push({ path: '/equipment/chart/' + command.equipmentId, query: { experimentId: this.experimentId, begin_time: this.begin_time, end_time: this.end_time }})
+        this.$router.push({
+          path: '/equipment/chart/' + command.equipmentId,
+          query: {
+            experimentId: this.experimentId,
+            interval: [this.begin_time, this.end_time]
+          }
+        })
       }
     },
     drawChart() {

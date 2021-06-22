@@ -141,8 +141,8 @@ export default {
         path: '/experiment/chart/' + this.experimentId,
         query: {
           sensor: sensor,
-          begin_time: this.begin_time,
-          end_time: this.end_time
+          interval: this.interval,
+          step: this.step
         }
       })
       console.log(sensor)
