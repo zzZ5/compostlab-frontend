@@ -6,7 +6,7 @@
 import ExperimentEdit from './components/ExperimentEdit'
 
 export default {
-  name: 'EditForm',
+  name: 'EditExperiment',
   components: { ExperimentEdit }
 }
 </script>

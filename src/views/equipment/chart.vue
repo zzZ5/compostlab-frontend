@@ -8,7 +8,7 @@
 import EquipmentChart from './components/EquipmentChart'
 
 export default {
-  name: 'LineChart',
+  name: 'EquipmentChart',
   components: { EquipmentChart }
 }
 </script>

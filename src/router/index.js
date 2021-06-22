@@ -187,7 +187,7 @@ export const asyncRoutes = [
       {
         path: 'edit/:equipmentId',
         component: () => import('@/views/equipment/edit'),
-        name: 'EquipmentEdit',
+        name: 'EditEquipment',
         meta: { title: 'Equipment Edit' },
         hidden: true
       },
@@ -233,7 +233,7 @@ export const asyncRoutes = [
       {
         path: 'edit/:sensorId',
         component: () => import('@/views/sensor/edit'),
-        name: 'SensorEdit',
+        name: 'EditSensor',
         meta: { title: 'Sensor Edit' },
         hidden: true
       },

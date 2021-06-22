@@ -6,7 +6,7 @@
 import SensorEdit from './components/SensorEdit'
 
 export default {
-  name: 'Edit',
+  name: 'EditSensor',
   components: { SensorEdit }
 }
 </script>

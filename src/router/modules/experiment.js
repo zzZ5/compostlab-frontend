@@ -32,13 +32,13 @@ const experimentRouter = {
         {
           path: 'created',
           component: () => import('@/views/experiment/mine/created'),
-          name: 'Created',
+          name: 'CreatedExperiment',
           meta: { title: 'Created', icon: 'created', activeMenu: '/experiment/mine/created' }
         },
         {
           path: 'involved',
           component: () => import('@/views/experiment/mine/involved'),
-          name: 'Involved',
+          name: 'InvolvedExperiment',
           meta: { title: 'Involved', icon: 'involved', activeMenu: '/experiment/mine/involved' }
         }
       ]
@@ -46,7 +46,7 @@ const experimentRouter = {
     {
       path: 'edit/:experimentId',
       component: () => import('@/views/experiment/edit'),
-      name: 'ExperimentEdit',
+      name: 'EditExperiment',
       meta: { title: 'Experiment Edit' },
       hidden: true
     },
@@ -67,8 +67,8 @@ const experimentRouter = {
     {
       path: 'chart/:experimentId',
       component: () => import('@/views/experiment/chart'),
-      name: 'Chart',
-      meta: { title: 'Chart' },
+      name: 'ExperimentChart',
+      meta: { title: 'Experiment Chart' },
       hidden: true
     }
   ]

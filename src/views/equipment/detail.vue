@@ -6,7 +6,7 @@
 import EquipmentDetail from './components/EquipmentDetail'
 
 export default {
-  name: 'DetailForm',
+  name: 'EquipmentDetail',
   components: { EquipmentDetail }
 }
 </script>

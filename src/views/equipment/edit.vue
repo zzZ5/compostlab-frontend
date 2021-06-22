@@ -6,7 +6,7 @@
 import EquipmentEdit from './components/EquipmentEdit'
 
 export default {
-  name: 'EditForm',
+  name: 'EditEquipment',
   components: { EquipmentEdit }
 }
 </script>

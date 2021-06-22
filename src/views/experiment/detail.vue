@@ -6,7 +6,7 @@
 import ExperimentDetail from './components/ExperimentDetail'
 
 export default {
-  name: 'DetailForm',
+  name: 'ExperimentDetail',
   components: { ExperimentDetail }
 }
 </script>
