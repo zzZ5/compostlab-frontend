@@ -44,7 +44,7 @@
     <el-dialog title="Option" :visible.sync="dialogFormVisible">
       <div slot="title" class="header-title">
         <span>
-          <span style="font-size: 22px">Option  </span>
+          <span style="font-size: 22px">Option </span>
           <el-link
             type="primary"
             href="https://echarts.apache.org/zh/option.html"
@@ -53,6 +53,7 @@
         </span>
       </div>
       <json-editor ref="jsonEditor" v-model="tempOption" />
+
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false"> Cancel </el-button>
         <el-button type="primary" @click="handleCustom"> Confirm </el-button>
@@ -64,7 +65,7 @@
 <script>
 import echarts from 'echarts'
 import resize from '../mixins/resize'
-import { fetchData } from '@/api/equipment'
+import { fetchData } from '@/api/sensor'
 import JsonEditor from '@/components/JsonEditor'
 import Sticky from '@/components/Sticky' // 粘性header组件
 
@@ -192,12 +193,12 @@ export default {
       dialogFormVisible: false,
       loading: false,
       experimentId: '0',
-      equipmentId: '0',
+      sensor: [],
       interval: [],
       query: {
         experiment: '0',
         step: 1,
-        count: undefined,
+        size: 999999,
         begin_time: undefined,
         end_time: undefined
       },
@@ -229,11 +230,13 @@ export default {
     this.chart = null
   },
   created() {
-    this.experimentId = this.$route.query && this.$route.query.experimentId
+    this.experimentId = this.$route.params && this.$route.params.experimentId
+    this.sensor = this.$route.query && this.$route.query.sensor
     this.interval = this.$route.query && this.$route.query.interval
 
-    // this.query.step = this.$route.query && this.$route.query.step
-    this.equipmentId = this.$route.params && this.$route.params.equipmentId
+    this.query.begin_time = this.interval[0].toLocaleString()
+    this.query.end_time = this.interval[1].toLocaleString()
+    this.query.step = this.$route.query && this.$route.query.step
     this.query.experiment = this.experimentId
     this.tempRoute = Object.assign({}, this.$route)
     this.setTagsViewTitle()
@@ -243,19 +246,18 @@ export default {
   methods: {
     fetchData() {
       this.chart.showLoading()
-      fetchData(this.equipmentId, this.query).then((response) => {
-        const tempSeries = []
-        response.data.forEach((element) => {
+      const tempSeries = []
+      this.sensor.forEach((sensorId) => {
+        fetchData(sensorId, this.query).then((response) => {
           const series = {
-            name: element.name,
+            name: response.data.name,
             type: 'line',
             smooth: true,
             showSymbol: false,
-            // hoverAnimation: false,
             data: []
           }
-          element.data.forEach((i) => {
-            series.data.push([i.measured_time, i.value, element.unit])
+          response.data.list.forEach((i) => {
+            series.data.push([i.measured_time, i.value, response.data.unit])
           })
           tempSeries.push(series)
         })
