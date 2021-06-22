@@ -66,7 +66,7 @@ const experimentRouter = {
     },
     {
       path: 'chart/:experimentId',
-      component: () => import('@/views/experiment/config'),
+      component: () => import('@/views/experiment/chart'),
       name: 'Chart',
       meta: { title: 'Chart' },
       hidden: true
