@@ -14,7 +14,7 @@ const experimentRouter = {
     {
       path: 'list',
       component: () => import('@/views/experiment/list'),
-      name: 'ExperimentList',
+      name: 'ListExperiment',
       meta: { title: 'Experiment List', icon: 'list', activeMenu: '/experiment/list' }
     },
     {
@@ -53,21 +53,21 @@ const experimentRouter = {
     {
       path: 'detail/:experimentId',
       component: () => import('@/views/experiment/detail'),
-      name: 'ExperimentDetail',
+      name: 'DetailExperiment',
       meta: { title: 'Experiment Detail' },
       hidden: true
     },
     {
       path: 'config/:experimentId',
       component: () => import('@/views/experiment/config'),
-      name: 'ChartConfig',
+      name: 'ConfigChart',
       meta: { title: 'Chart Config' },
       hidden: true
     },
     {
       path: 'chart/:experimentId',
       component: () => import('@/views/experiment/chart'),
-      name: 'ExperimentChart',
+      name: 'ChartExperiment',
       meta: { title: 'Experiment Chart' },
       hidden: true
     }

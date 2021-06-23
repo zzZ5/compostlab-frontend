@@ -69,6 +69,7 @@ import JsonEditor from '@/components/JsonEditor'
 import Sticky from '@/components/Sticky' // 粘性header组件
 
 export default {
+  naem: 'EquipmentChart',
   components: { Sticky, JsonEditor },
   mixins: [resize],
   props: {

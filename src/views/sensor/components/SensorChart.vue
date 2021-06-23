@@ -8,6 +8,7 @@ import resize from '../mixins/resize'
 import { fetchData } from '@/api/sensor'
 
 export default {
+  name: 'SensorChart',
   mixins: [resize],
   props: {
     className: {

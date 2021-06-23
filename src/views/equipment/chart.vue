@@ -8,7 +8,7 @@
 import EquipmentChart from './components/EquipmentChart'
 
 export default {
-  name: 'EquipmentChart',
+  name: 'ChartEquipment',
   components: { EquipmentChart }
 }
 </script>

@@ -204,7 +204,7 @@ const typeKeyValue = typeOptions.reduce((acc, cur) => {
 }, {})
 
 export default {
-  name: 'SensorList',
+  name: 'ListSensor',
   components: { Pagination },
   directives: { waves },
   filters: {

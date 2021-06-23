@@ -8,7 +8,7 @@
 import SensorChart from './components/SensorChart'
 
 export default {
-  name: 'SensorChart',
+  name: 'ChartSensor',
   components: { SensorChart }
 }
 </script>

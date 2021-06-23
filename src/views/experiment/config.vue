@@ -64,7 +64,7 @@ import { fetchExperiment } from '@/api/experiment'
 import Sticky from '@/components/Sticky'
 
 export default {
-  name: 'ChartConfig',
+  name: 'ConfigChart',
   components: { Sticky },
   data() {
     return {

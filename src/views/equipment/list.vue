@@ -188,7 +188,7 @@ const typeKeyValue = typeOptions.reduce((acc, cur) => {
 }, {})
 
 export default {
-  name: 'EquipmentList',
+  name: 'ListEquipment',
   components: { Pagination },
   directives: { waves },
   filters: {

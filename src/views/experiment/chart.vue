@@ -8,7 +8,7 @@
 import ExperimentChart from './components/ExperimentChart'
 
 export default {
-  name: 'ExperimentChart',
+  name: 'ChartExperiment',
   components: { ExperimentChart }
 }
 </script>

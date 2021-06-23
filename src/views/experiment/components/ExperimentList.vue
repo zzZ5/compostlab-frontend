@@ -198,7 +198,7 @@ const statusKeyValue = statusOptions.reduce((acc, cur) => {
 }, {})
 
 export default {
-  name: 'Equipment',
+  name: 'ExperimentList',
   components: { Pagination },
   directives: { waves },
   filters: {
