@@ -78,8 +78,23 @@
                     </el-select>
                   </el-form-item>
                 </el-col>
-
-                <el-col :span="10">
+                <el-col :span="8">
+                  <el-form-item
+                    label-width="60px"
+                    label="Unit:"
+                    class="postInfo-container-item"
+                  >
+                    <el-select v-model="postForm.unit">
+                      <el-option
+                        v-for="(item, index) in unitOptions"
+                        :key="item + index"
+                        :label="item"
+                        :value="item"
+                      />
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="8">
                   <el-form-item
                     v-if="postForm.created_time"
                     label-width="120px"
@@ -124,12 +139,13 @@ import Sticky from '@/components/Sticky' // 粘性header组件
 
 const defaultForm = {
   id: undefined,
-  name: '', // 设备名
-  abbreviation: '', // 设备简称
-  type: '', // 设备类型
-  descript: '', // 设备描述
-  equipment: '', // 设备传感器
-  created_time: undefined // 设备创建时间
+  name: '', // 传感器名
+  abbreviation: '', // 传感器简称
+  type: '', // 传感器类型
+  unit: '', // 传感器单位
+  descript: '', // 传感器描述
+  equipment: '', // 传感器所属的设备
+  created_time: undefined // 传感器创建时间
 }
 
 export default {
