@@ -286,15 +286,15 @@ export default {
       this.dialogFormVisible = false
     },
     setTagsViewTitle() {
-      const title = 'Equipment Chart'
+      const title = 'Experiment Chart'
       const route = Object.assign({}, this.tempRoute, {
-        title: `${title} - ${this.equipmentId}`
+        title: `${title} - ${this.experimentId}`
       })
       this.$store.dispatch('tagsView/updateVisitedView', route)
     },
     setPageTitle() {
-      const title = 'Equipment Chart'
-      document.title = `${title} - ${this.equipmentId}`
+      const title = 'Experiment Chart'
+      document.title = `${title} - ${this.experimentId}`
     }
   }
 }
