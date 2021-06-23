@@ -24,6 +24,12 @@ const experimentRouter = {
       meta: { title: 'Create Experiment', icon: 'edit', activeMenu: '/experiment/create', roles: ['admin', 'active'] }
     },
     {
+      path: 'review',
+      component: () => import('@/views/experiment/review'),
+      name: 'ReviewExperiment',
+      meta: { title: 'Experiment Review', icon: 'review', activeMenu: '/experiment/review' }
+    },
+    {
       path: 'mine',
       component: () => import('@/views/experiment/mine/index'),
       name: 'MyExperiment',

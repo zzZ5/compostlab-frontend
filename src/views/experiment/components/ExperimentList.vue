@@ -154,7 +154,18 @@
         class-name="small-padding fixed-width"
       >
         <template slot-scope="{ row }">
+          <el-button
+            v-if="review"
+            type="primary"
+            style="margin-right: 10px"
+            size="mini"
+            @click="handleReview(row)"
+          >
+            Review
+          </el-button>
+
           <router-link
+            v-else
             :to="'/experiment/edit/' + row.id"
             class="link-type"
             style="padding-right: 10px"
@@ -176,11 +187,44 @@
         @pagination="getList"
       />
     </el-table>
+
+    <el-dialog title="Review" :visible.sync="dialogFormVisible">
+      <el-form
+        :model="reviewForm"
+        label-position="left"
+        label-width="180px"
+        style="width: 400px; margin-left: 100px"
+      >
+        <el-form-item label="Experiment Name">
+          <el-input
+            v-model="reviewForm.experimentName"
+            :disabled="true"
+          />
+        </el-form-item>
+        <el-form-item label="Pass or not">
+          <el-switch
+            v-model="reviewForm.is_passed"
+            active-text="pass"
+          />
+        </el-form-item>
+        <el-form-item label="Reply">
+          <el-input
+            v-model="reviewForm.reply"
+            type="textarea"
+            :rows="2"
+          />
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false"> Cancel </el-button>
+        <el-button type="primary" @click="reviewExperiment"> Confirm </el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { fetchList } from '@/api/experiment'
+import { fetchList, reviewExperiment } from '@/api/experiment'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
@@ -216,6 +260,10 @@ export default {
     }
   },
   props: {
+    review: {
+      type: Boolean,
+      default: false
+    },
     owner: {
       type: Boolean,
       default: false
@@ -244,6 +292,12 @@ export default {
         type: undefined,
         ordering: '-created_time'
       },
+      reviewForm: {
+        experimentId: '',
+        experimentName: '',
+        is_passed: false,
+        reply: ''
+      },
       statusOptions,
       orderingOptions: [
         { label: 'ID Ascending', key: 'id' },
@@ -251,7 +305,8 @@ export default {
         { label: 'Created Time Ascending', key: 'created_time' },
         { label: 'Created Time Dscending', key: '-created_time' }
       ],
-      downloadLoading: false
+      downloadLoading: false,
+      dialogFormVisible: false
     }
   },
   created() {
@@ -269,11 +324,7 @@ export default {
       fetchList(this.listQuery).then((response) => {
         this.list = response.data.list
         this.pagination = response.data.pagination
-
-        // Just to simulate the time of the request
-        setTimeout(() => {
-          this.listLoading = false
-        }, 1.5 * 1000)
+        this.listLoading = false
       })
     },
     handleFilter() {
@@ -296,6 +347,25 @@ export default {
     },
     handleCreate() {
       this.$router.push({ path: '/experiment/create' })
+    },
+    handleReview(experiment) {
+      this.reviewForm.experimentId = experiment.id
+      this.reviewForm.experimentName = experiment.name
+      if (Number(experiment.status) >= 1) {
+        this.reviewForm.is_passed = true
+      }
+      this.dialogFormVisible = true
+    },
+    reviewExperiment() {
+      reviewExperiment(this.reviewForm.experimentId, this.reviewForm).then((response) => {
+        this.$notify({
+          title: 'Success',
+          message: 'Review Successfully',
+          type: 'success',
+          duration: 2000
+        })
+        this.dialogFormVisible = false
+      })
     },
     handleDownload() {
       this.downloadLoading = true
