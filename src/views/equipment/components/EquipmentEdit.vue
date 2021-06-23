@@ -196,8 +196,7 @@ export default {
       rules: {
         name: [{ validator: validateRequire }],
         abbreviation: [{ validator: validateRequire }],
-        type: [{ validator: validateRequire }],
-        descript: [{ validator: validateRequire }]
+        type: [{ validator: validateRequire }]
       },
       pagination: {
         total_size: 0

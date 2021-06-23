@@ -245,7 +245,9 @@ export default {
       rules: {
         name: [{ validator: validateRequire }],
         site: [{ validator: validateRequire }],
-        descript: [{ validator: validateRequire }]
+        descript: [{ validator: validateRequire }],
+        begin_time: [{ validator: validateRequire }],
+        end_time: [{ validator: validateRequire }]
       },
       tempRoute: {},
       list: {
