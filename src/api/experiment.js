@@ -38,3 +38,11 @@ export function updateExperiment(id, data) {
     data
   })
 }
+
+export function reviewExperiment(id, data) {
+  return request({
+    url: '/experiment/' + id + '/review/',
+    method: 'post',
+    data
+  })
+}
