@@ -39,6 +39,14 @@ export function updateEquipment(id, data) {
   })
 }
 
+export function publicCmd(id, data) {
+  return request({
+    url: '/equipment/' + id + '/cmd/',
+    method: 'post',
+    data
+  })
+}
+
 export function fetchData(id, listQuery) {
   return request({
     url: '/equipment/' + id + '/data/',

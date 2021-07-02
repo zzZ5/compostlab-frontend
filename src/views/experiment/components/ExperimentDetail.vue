@@ -44,6 +44,14 @@
                       end_time: end_time,
                     }"
                   >Chart</el-dropdown-item>
+                  <el-dropdown-item
+                    :command="{
+                      command: 'reset',
+                      equipmentId: row.id,
+                      begin_time: begin_time,
+                      end_time: end_time,
+                    }"
+                  >Reset</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
               <small style="padding-left: 5px">({{ row.abbreviation }})</small>
@@ -86,6 +94,7 @@
 <script>
 import Sticky from '@/components/Sticky' // 粘性header组件
 import { fetchExperiment } from '@/api/experiment'
+import { publicCmd } from '@/api/equipment'
 
 export default {
   name: 'ExperimentDetail',
@@ -117,6 +126,11 @@ export default {
             experimentId: this.experimentId,
             interval: [this.begin_time, this.end_time]
           }
+        })
+      }
+      if (command.command === 'reset') {
+        publicCmd(command.equipmentId, { 'cmd': 'reset', 'experiment': this.experimentId }).then((response) => {
+
         })
       }
     },
