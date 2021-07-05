@@ -46,12 +46,47 @@
                   >Chart</el-dropdown-item>
                   <el-dropdown-item
                     :command="{
-                      command: 'reset',
+                      command: 'cmd',
+                      cmd: 'reset',
                       equipmentId: row.id,
-                      begin_time: begin_time,
-                      end_time: end_time,
                     }"
                   >Reset</el-dropdown-item>
+
+                  <el-dropdown-item>
+                    <el-dropdown
+                      trigger="hover"
+                      placement="right-start"
+                      @command="handleCommand"
+                    >
+                      <span class="el-dropdown-link">
+                        Heater<i class="el-icon-arrow-right el-icon--right" />
+                      </span>
+                      <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item
+                          :command="{
+                            command: 'heater',
+                            heater: 'on',
+                            equipmentId: row.id,
+                          }"
+                        >On</el-dropdown-item>
+                        <el-dropdown-item
+                          :command="{
+                            command: 'heater',
+                            heater: 'off',
+                            equipmentId: row.id,
+                          }"
+                        >Off</el-dropdown-item>
+                      </el-dropdown-menu>
+                    </el-dropdown>
+                  </el-dropdown-item>
+
+                  <!-- <el-dropdown-item
+                    :command="{
+                      command: 'cmd',
+                      equipmentId: row.id,
+                    }"
+                    >Command</el-dropdown-item
+                  > -->
                 </el-dropdown-menu>
               </el-dropdown>
               <small style="padding-left: 5px">({{ row.abbreviation }})</small>
@@ -127,10 +162,20 @@ export default {
             interval: [this.begin_time, this.end_time]
           }
         })
-      }
-      if (command.command === 'reset') {
-        publicCmd(command.equipmentId, { 'cmd': 'reset', 'experiment': this.experimentId }).then((response) => {
-
+      } else {
+        const data = { experiment: this.experimentId }
+        if (command.command === 'cmd') {
+          data['cmd'] = command.cmd
+        } else if (command.command === 'heater') {
+          data['heater'] = command.heater
+        }
+        publicCmd(command.equipmentId, data).then((response) => {
+          this.$notify({
+            // title: "Success",
+            message: response.message,
+            type: 'success',
+            duration: 2000
+          })
         })
       }
     },
