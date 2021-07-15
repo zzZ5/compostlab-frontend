@@ -1,13 +1,66 @@
 <template>
   <div class="experimentDetail-container">
     <sticky :z-index="10" class-name="sub-navbar draft">
-      <el-button style="margin-left: 10px" @click="drawChart"> Draw </el-button>
+      <el-button
+        type="success"
+        style="margin-left: 10px"
+        :style="{ display: display.operateHeader }"
+        @click="handleSelect('selectAll')"
+      >
+        Select All
+      </el-button>
+      <el-button
+        style="margin-left: 10px"
+        :style="{ display: display.operateHeader }"
+        @click="handleSelect('reverse')"
+      >
+        Reverse selection
+      </el-button>
+      <el-button
+        type="primary"
+        style="margin-left: 10px"
+        :style="{ display: display.operateHeader }"
+        @click="handleSelect('confirm')"
+      >
+        Confirm
+      </el-button>
+      <el-button
+        type="info"
+        style="margin-left: 10px"
+        :style="{ display: display.operateHeader }"
+        @click="handleSelect('cancel')"
+      >
+        Cancel
+      </el-button>
+
+      <el-button
+        type="primary"
+        style="margin-left: 10px"
+        :style="{ display: display.mainHeader }"
+        @click="handleOperate"
+      >
+        Operate
+      </el-button>
+      <el-button
+        style="margin-left: 10px"
+        :style="{ display: display.mainHeader }"
+        @click="handleDraw"
+      >
+        Draw
+      </el-button>
     </sticky>
     <div v-loading class="experimentDetail-main-container">
       <el-row v-loading="loading" :gutter="20" style="margin-top: 50px">
         <el-col v-for="row in list" :key="row.id" :span="6">
           <el-card class="box-card">
             <div slot="header" class="clearfix">
+              <el-checkbox
+                v-model="checkedEquipment"
+                :label="row.id"
+                :style="{ display: display.checkbox }"
+              >
+                <span />
+              </el-checkbox>
               <router-link
                 :to="{
                   path: '/equipment/detail/' + row.id,
@@ -79,14 +132,6 @@
                       </el-dropdown-menu>
                     </el-dropdown>
                   </el-dropdown-item>
-
-                  <!-- <el-dropdown-item
-                    :command="{
-                      command: 'cmd',
-                      equipmentId: row.id,
-                    }"
-                    >Command</el-dropdown-item
-                  > -->
                 </el-dropdown-menu>
               </el-dropdown>
               <small style="padding-left: 5px">({{ row.abbreviation }})</small>
@@ -138,10 +183,17 @@ export default {
     return {
       experimentId: '0',
       begin_time: '',
+      operateHeader: 'none',
       end_time: '',
       list: [],
       loading: false,
-      tempRoute: {}
+      tempRoute: {},
+      display: {
+        checkbox: 'none',
+        mainHeader: 'inline',
+        operateHeader: 'none'
+      },
+      checkedEquipment: []
     }
   },
   computed: {},
@@ -179,7 +231,20 @@ export default {
         })
       }
     },
-    drawChart() {
+    handleSelect(cmd) {
+      if (cmd === 'cancel') {
+        this.checkedEquipment = []
+        this.display.checkbox = 'none'
+        this.display.mainHeader = 'inline'
+        this.display.operateHeader = 'none'
+      }
+    },
+    handleOperate() {
+      this.display.checkbox = 'inline'
+      this.display.mainHeader = 'none'
+      this.display.operateHeader = 'inline'
+    },
+    handleDraw() {
       this.$router.push({ path: '/experiment/config/' + this.experimentId })
     },
     fetchData(id) {
