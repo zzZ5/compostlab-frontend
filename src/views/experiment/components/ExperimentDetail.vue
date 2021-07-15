@@ -237,6 +237,12 @@ export default {
         this.display.checkbox = 'none'
         this.display.mainHeader = 'inline'
         this.display.operateHeader = 'none'
+      } else if (cmd === 'selectAll') {
+        const temp = []
+        this.list.forEach(element => {
+          temp.push(element.id)
+        })
+        this.checkedEquipment = temp
       }
     },
     handleOperate() {
