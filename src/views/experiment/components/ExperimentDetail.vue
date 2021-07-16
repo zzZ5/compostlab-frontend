@@ -10,13 +10,6 @@
         Select All
       </el-button>
       <el-button
-        style="margin-left: 10px"
-        :style="{ display: display.operateHeader }"
-        @click="handleSelect('reverse')"
-      >
-        Reverse selection
-      </el-button>
-      <el-button
         type="primary"
         style="margin-left: 10px"
         :style="{ display: display.operateHeader }"
@@ -25,7 +18,6 @@
         Confirm
       </el-button>
       <el-button
-        type="info"
         style="margin-left: 10px"
         :style="{ display: display.operateHeader }"
         @click="handleSelect('cancel')"
@@ -55,7 +47,7 @@
           <el-card class="box-card">
             <div slot="header" class="clearfix">
               <el-checkbox
-                v-model="checkedEquipment"
+                v-model="cmd.equipment"
                 :label="row.id"
                 :style="{ display: display.checkbox }"
               >
@@ -168,19 +160,34 @@
         </el-col>
       </el-row>
     </div>
+
+    <el-dialog title="Command" :visible.sync="dialogFormVisible">
+
+      <json-editor ref="jsonEditor" v-model="cmd" />
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false"> Cancel </el-button>
+        <el-button type="primary" @click="confirmCmd"> Confirm </el-button>
+      </div>
+    </el-dialog>
+
   </div>
 </template>
 
 <script>
 import Sticky from '@/components/Sticky' // 粘性header组件
 import { fetchExperiment } from '@/api/experiment'
-import { publicCmd } from '@/api/equipment'
+import JsonEditor from '@/components/JsonEditor'
+import { publicCmd as equipmentCmd } from '@/api/equipment'
+import { publicCmd as experimentCmd } from '@/api/experiment'
 
 export default {
   name: 'ExperimentDetail',
-  components: { Sticky },
+  components: { Sticky, JsonEditor },
   data() {
     return {
+      cmd: {
+        equipment: []
+      },
       experimentId: '0',
       begin_time: '',
       operateHeader: 'none',
@@ -193,7 +200,7 @@ export default {
         mainHeader: 'inline',
         operateHeader: 'none'
       },
-      checkedEquipment: []
+      dialogFormVisible: false
     }
   },
   computed: {},
@@ -221,7 +228,7 @@ export default {
         } else if (command.command === 'heater') {
           data['heater'] = command.heater
         }
-        publicCmd(command.equipmentId, data).then((response) => {
+        equipmentCmd(command.equipmentId, data).then((response) => {
           this.$notify({
             // title: "Success",
             message: response.message,
@@ -233,17 +240,26 @@ export default {
     },
     handleSelect(cmd) {
       if (cmd === 'cancel') {
-        this.checkedEquipment = []
+        this.cmd.equipment = []
         this.display.checkbox = 'none'
         this.display.mainHeader = 'inline'
         this.display.operateHeader = 'none'
       } else if (cmd === 'selectAll') {
-        const temp = []
-        this.list.forEach(element => {
-          temp.push(element.id)
-        })
-        this.checkedEquipment = temp
+        this.cmd.equipment = this.list.map(item => item.id)
+      } else if (cmd === 'confirm') {
+        this.dialogFormVisible = true
       }
+    },
+    confirmCmd() {
+      this.dialogFormVisible = false
+      experimentCmd(this.experimentId, JSON.parse(this.cmd)).then((response) => {
+        this.$notify({
+          // title: "Success",
+          message: response.message,
+          type: 'success',
+          duration: 2000
+        })
+      })
     },
     handleOperate() {
       this.display.checkbox = 'inline'

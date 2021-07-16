@@ -39,6 +39,14 @@ export function updateExperiment(id, data) {
   })
 }
 
+export function publicCmd(id, data) {
+  return request({
+    url: '/experiment/' + id + '/cmd/',
+    method: 'post',
+    data
+  })
+}
+
 export function reviewExperiment(id, data) {
   return request({
     url: '/experiment/' + id + '/review/',
