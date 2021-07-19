@@ -175,6 +175,10 @@
               style="text-align: left; display: inline-block"
               :titles="['Available', 'Selected']"
               :data="list.equipment"
+              :format="{
+                noChecked: '${total}',
+                hasChecked: '${checked}/${total}'
+              }"
               @change="equipmentTransferChange"
             >
               <el-pagination
