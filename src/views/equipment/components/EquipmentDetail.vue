@@ -2,7 +2,7 @@
   <div class="experimentDetail-container">
     <div class="experimentDetail-main-container">
       <el-row v-loading="loading" :gutter="20" style="margin-top: 50px">
-        <el-col v-for="row in list" :key="row.id" :span="6">
+        <el-col v-for="row in list" :key="row.id" :span="6" style="min-width: 200px">
           <el-card class="box-card">
             <div slot="header" class="clearfix">
               <div v-if="experimentId==='0'">

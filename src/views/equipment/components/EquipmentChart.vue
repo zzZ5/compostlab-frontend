@@ -248,7 +248,7 @@ export default {
         const tempSeries = []
         response.data.forEach((element) => {
           const series = {
-            name: element.name,
+            name: element.abbreviation,
             type: 'line',
             smooth: true,
             showSymbol: false,

@@ -133,7 +133,7 @@ export default {
         const tempSeries = []
         const data = response.data
         const series = {
-          name: data.name,
+          name: data.abbreviation,
           type: 'line',
           smooth: true,
           showSymbol: false,

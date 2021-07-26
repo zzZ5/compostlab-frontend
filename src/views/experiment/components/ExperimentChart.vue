@@ -251,7 +251,7 @@ export default {
       this.sensor.forEach((sensorId) => {
         fetchData(sensorId, this.query).then((response) => {
           const series = {
-            name: response.data.name,
+            name: response.data.abbreviation,
             type: 'line',
             smooth: true,
             showSymbol: false,
