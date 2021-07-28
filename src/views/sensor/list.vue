@@ -121,7 +121,7 @@
       v-show="pagination.total_size > 0"
       :total="pagination.total_size"
       :page.sync="listQuery.page"
-      :limit.sync="listQuery.size"
+      :size.sync="listQuery.size"
       @pagination="getList"
     />
 
