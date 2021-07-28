@@ -1,6 +1,22 @@
 <template>
   <div class="experimentDetail-container">
+    <sticky :z-index="10" class-name="sub-navbar draft">
+      <el-button
+        type="primary"
+        style="margin-left: 10px"
+        @click="handleEdit"
+      >
+        Edit
+      </el-button>
+      <el-button
+        style="margin-left: 10px"
+        @click="handleDraw"
+      >
+        Draw
+      </el-button>
+    </sticky>
     <div class="experimentDetail-main-container">
+
       <el-row v-loading="loading" :gutter="20" style="margin-top: 50px">
         <el-col v-for="row in list" :key="row.id" :span="6" style="min-width: 200px">
           <el-card class="box-card">
@@ -63,11 +79,12 @@
 </template>
 
 <script>
+import Sticky from '@/components/Sticky' // 粘性header组件
 import { fetchEquipment } from '@/api/equipment'
 
 export default {
   name: 'EquipmentDetail',
-  components: {},
+  components: { Sticky },
   data() {
     return {
       experimentId: '0',
@@ -87,6 +104,19 @@ export default {
     this.setPageTitle()
   },
   methods: {
+    handleEdit() {
+      this.$router.push({
+        path: '/equipment/edit/' + this.equipmentId
+      })
+    },
+    handleDraw() {
+      this.$router.push({
+        path: '/equipment/chart/' + this.equipmentId,
+        query: {
+          experimentId: this.experimentId
+        }
+      })
+    },
     handleCommand(command) {
       if (command.command === 'chart') {
         this.$router.push({ path: '/sensor/chart/' + command.sensorId, query: { experimentId: this.experimentId }})
