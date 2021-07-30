@@ -133,6 +133,7 @@ export default {
       return this.$refs.tree.getCheckedNodes(true)
     },
     submitForm() {
+      this.loading = true
       const sensor = []
       this.getCheckedNodes().forEach((element) => {
         sensor.push(element.id)
@@ -145,7 +146,7 @@ export default {
           step: this.step
         }
       })
-      console.log(sensor)
+      this.loading = false
     },
     setTagsViewTitle() {
       const title = 'Chart Config'

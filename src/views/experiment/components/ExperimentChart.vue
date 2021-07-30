@@ -246,9 +246,9 @@ export default {
   },
   methods: {
     fetchData() {
-      this.chart.showLoading()
       const tempSeries = []
       this.sensor.forEach((sensorId) => {
+        this.chart.showLoading()
         fetchData(sensorId, this.query).then((response) => {
           const series = {
             name: response.data.abbreviation,
@@ -261,9 +261,9 @@ export default {
             series.data.push([i.measured_time, i.value, response.data.unit])
           })
           tempSeries.push(series)
+          this.series = tempSeries
+          this.chart.hideLoading()
         })
-        this.series = tempSeries
-        this.chart.hideLoading()
       })
     },
     initChart() {
