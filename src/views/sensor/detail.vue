@@ -1,54 +1,66 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
+      <div class="filter-container">
+        <el-button
+          v-waves
+          :loading="downloadLoading"
+          class="filter-item"
+          style="margin-left: 10px"
+          type="primary"
+          icon="el-icon-download"
+          @click="handleDownload('thisPage')"
+        >
+          Export This Page
+        </el-button>
+        <el-button
+          v-waves
+          :loading="downloadLoading"
+          class="filter-item"
+          style="margin-left: 10px"
+          type="primary"
+          icon="el-icon-download"
+          @click="handleDownload('all')"
+        >
+          Export All Data
+        </el-button>
 
-      <el-button
-        v-waves
-        :loading="downloadLoading"
-        class="filter-item"
-        style="margin-left: 10px"
-        type="primary"
-        icon="el-icon-download"
-        @click="handleDownload"
+      </div>
+      <el-table
+        v-loading="listLoading"
+        :data="list"
+        border
+        fit
+        highlight-current-row
+        style="width: 100%"
       >
-        Export
-      </el-button>
-    </div>
 
-    <el-table
-      v-loading="listLoading"
-      :data="list"
-      border
-      fit
-      highlight-current-row
-      style="width: 100%"
-    >
+        <el-table-column label="Value" min-width="100px">
+          <template slot-scope="{ row }">
+            <span>{{ row.value }}</span>
+          </template>
+        </el-table-column>
 
-      <el-table-column label="Value" min-width="100px">
-        <template slot-scope="{ row }">
-          <span>{{ row.value }}</span>
-        </template>
-      </el-table-column>
+        <el-table-column label="Unit" min-width="100px" align="center">
+          <template slot-scope="{ row }">
+            <span>{{ row.unit }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="Measured Time" min-width="120px">
+          <template slot-scope="{ row }">
+            <span> {{ row.measured_time }} </span>
+          </template>
+        </el-table-column>
 
-      <el-table-column label="Unit" min-width="100px" align="center">
-        <template slot-scope="{ row }">
-          <span>{{ row.unit }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="Measured Time" min-width="120px">
-        <template slot-scope="{ row }">
-          <span> {{ row.measured_time }} </span>
-        </template>
-      </el-table-column>
-
+      </el-table>
       <pagination
         v-show="pagination.total_size > 0"
         :total="pagination.total_size"
         :page.sync="listQuery.page"
-        :limit.sync="listQuery.size"
+        :size.sync="listQuery.size"
         @pagination="getList"
       />
-    </el-table>
+    </div>
   </div>
 </template>
 
@@ -70,6 +82,7 @@ export default {
     return {
       list: null,
       unit: null,
+      downloadList: null,
       pagination: { total_size: 0 },
       listLoading: true,
       listQuery: {
@@ -88,15 +101,15 @@ export default {
     this.experimentId = this.$route.query && this.$route.query.experimentId
     this.listQuery.experiment = this.experimentId
     this.sensorId = this.$route.params && this.$route.params.sensorId
-    this.getList(this.sensorId)
+    this.getList()
     this.tempRoute = Object.assign({}, this.$route)
     this.setTagsViewTitle()
     this.setPageTitle()
   },
   methods: {
-    getList(id) {
+    getList() {
       this.listLoading = true
-      fetchData(id, this.listQuery).then((response) => {
+      fetchData(this.sensorId, this.listQuery).then((response) => {
         const unit = response.data.unit
         this.list = response.data.list
         this.list.forEach(element => {
@@ -110,8 +123,7 @@ export default {
       this.listQuery.page = 1
       this.getList()
     },
-    handleDownload() {
-      this.downloadLoading = true
+    export2Excel() {
       import('@/vendor/Export2Excel').then((excel) => {
         const tHeader = [
           'Value',
@@ -129,11 +141,32 @@ export default {
           data,
           filename: 'data-table'
         })
-        this.downloadLoading = false
       })
     },
+    handleDownload(arg) {
+      this.downloadLoading = true
+      if (arg === 'thisPage') {
+        this.downloadList = this.list
+        this.export2Excel()
+      } else {
+        fetchData(this.sensorId, {
+          experiment: this.experimentId,
+          page: 1,
+          size: 999999,
+          step: 1
+        }).then((response) => {
+          const unit = response.data.unit
+          this.downloadList = response.data.list
+          this.downloadList.forEach(element => {
+            element['unit'] = unit
+          })
+          this.export2Excel()
+        })
+      }
+      this.downloadLoading = false
+    },
     formatJson(filterVal) {
-      return this.list.map((v) =>
+      return this.downloadList.map((v) =>
         filterVal.map((j) => {
           if (j === 'measured_time') {
             return parseTime(v[j])
