@@ -85,7 +85,7 @@ export default {
       sensorId: '0',
       query: {
         experiment: '0',
-        step: 1,
+        step: 60,
         size: 999999,
         begin_time: undefined,
         end_time: undefined

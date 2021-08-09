@@ -107,7 +107,7 @@ export default {
       loading: false,
       equipment: [],
       interval: [],
-      step: 1,
+      step: 60,
       experimentId: '0',
       tempRoute: {}
     }
