@@ -206,17 +206,12 @@ export default {
     }
   },
   watch: {
+    // 监控series的变化，并根据变化更新图表。
     series(val) {
       if (val !== []) {
         this.chart.setOption({ series: val })
       }
     }
-    // options: {
-    //   handler(options) {
-    //     this.chart.setOption(this.options)
-    //   },
-    //   deep: true
-    // }
   },
   mounted() {
     this.initChart()
@@ -230,9 +225,9 @@ export default {
     this.chart = null
   },
   created() {
+    // 获取图表初始参数。
     this.experimentId = this.$route.query && this.$route.query.experimentId
     this.interval = this.$route.query && this.$route.query.interval
-
     // this.query.step = this.$route.query && this.$route.query.step
     this.equipmentId = this.$route.params && this.$route.params.equipmentId
     this.query.experiment = this.experimentId
