@@ -57,7 +57,6 @@
     </div>
 
     <el-table
-      :key="tableKey"
       v-loading="listLoading"
       :data="list"
       border
@@ -105,7 +104,7 @@
         class-name="small-padding fixed-width"
       >
         <template slot-scope="{ row }">
-          <el-button size="mini" style="margin-right: 10px" @click="handleUpdate(row)">
+          <el-button size="mini" style="margin-right: 10px" @click="handleEdit(row)">
             Edit
           </el-button>
           <router-link :to="{path:'/equipment/detail/' + row.id, query:{experimentId:'0'}}" class="link-type">
@@ -198,7 +197,6 @@ export default {
   },
   data() {
     return {
-      tableKey: 0,
       list: null,
       pagination: { total_size: 0 },
       listLoading: true,
@@ -216,8 +214,6 @@ export default {
         { label: 'Created Time Ascending', key: 'created_time' },
         { label: 'Created Time Dscending', key: '-created_time' }
       ],
-      // statusOptions: ['published', 'draft', 'deleted'],
-      // showReviewer: false,
       temp: {
         name: '',
         abbreviation: 'RE',
@@ -250,6 +246,7 @@ export default {
     this.getList()
   },
   methods: {
+    // 根据配置条件（排序、筛选等）更新table数据.
     getList() {
       this.listLoading = true
       fetchList(this.listQuery).then((response) => {
@@ -258,10 +255,12 @@ export default {
         this.listLoading = false
       })
     },
+    // 处理筛选
     handleFilter() {
       this.listQuery.page = 1
       this.getList()
     },
+    // 处理排序
     sortChange(data) {
       const { prop, order } = data
       if (prop === 'id' || prop === 'created_time') {
@@ -276,13 +275,15 @@ export default {
       }
       this.handleFilter()
     },
-    handleUpdate(row) {
+    // 处理edit按钮。
+    handleEdit(row) {
       this.temp = Object.assign({}, row)
       this.dialogFormVisible = true
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
       })
     },
+    // 根据edit表中的数据更新设备信息。
     updateData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
@@ -301,6 +302,7 @@ export default {
         }
       })
     },
+    // 下载当前页面数据。
     handleDownload() {
       this.downloadLoading = true
       import('@/vendor/Export2Excel').then((excel) => {
@@ -329,6 +331,7 @@ export default {
         this.downloadLoading = false
       })
     },
+    // 将list数据稍作处理，转换成下载用的格式。
     formatJson(filterVal) {
       return this.list.map((v) =>
         filterVal.map((j) => {
@@ -340,6 +343,7 @@ export default {
         })
       )
     },
+    // 处理排序标的。
     getSortClass: function(key) {
       const sort = this.listQuery.ordering
       if (sort === `${key}`) {

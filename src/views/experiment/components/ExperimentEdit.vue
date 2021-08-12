@@ -263,6 +263,7 @@ export default {
         equipment: []
       },
       loading: {
+        form: true,
         publish: false,
         userList: false,
         equipmentList: false
@@ -368,6 +369,7 @@ export default {
           this.setTagsViewTitle()
           // set page title
           this.setPageTitle()
+          this.loading.form = false
         })
         .catch((err) => {
           console.log(err)
@@ -407,6 +409,7 @@ export default {
                   type: 'success',
                   duration: 2000
                 })
+                this.loading.publish = false
               }
             )
           } else {
@@ -419,9 +422,9 @@ export default {
                 type: 'success',
                 duration: 2000
               })
+              this.loading.publish = false
             })
           }
-          this.loading.publish = false
         } else {
           console.log('error submit!!')
           return false
