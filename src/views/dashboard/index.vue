@@ -23,6 +23,7 @@ export default {
     ])
   },
   created() {
+    // 判断是否为管理员，不同身份进入不同的界面
     if (!this.roles.includes('admin')) {
       this.currentRole = 'activeDashboard'
     }
