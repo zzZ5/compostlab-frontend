@@ -87,7 +87,7 @@
                     <el-date-picker
                       v-model="postForm.begin_time"
                       type="datetime"
-                      format="yyyy-MM-dd HH:mm:ss"
+                      value-format="yyyy-MM-dd HH:mm:ss"
                       placeholder="Select date and time"
                     />
                   </el-form-item>
@@ -102,7 +102,7 @@
                     <el-date-picker
                       v-model="postForm.end_time"
                       type="datetime"
-                      format="yyyy-MM-dd HH:mm:ss"
+                      value-format="yyyy-MM-dd HH:mm:ss"
                       placeholder="Select date and time"
                     />
                   </el-form-item>
@@ -400,6 +400,8 @@ export default {
         if (valid) {
           this.loading.publish = true
           if (this.isEdit) {
+            console.log(this.postForm.begin_time)
+            console.log(this.postForm.end_time)
             updateExperiment(this.postForm.id, this.postForm).then(
               (response) => {
                 this.editForm()
