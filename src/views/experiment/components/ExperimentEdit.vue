@@ -334,7 +334,7 @@ export default {
         this.list.equipment = [...this.list.equipment, ...this.selected.equipment]
         this.list.equipment = this.unique(this.list.equipment)
         this.pagination.equipment = response.data.pagination
-        this.loading.userList = false
+        this.loading.EquipmentList = false
       })
     },
     userTransferChange(current, direction, move) {
@@ -361,7 +361,7 @@ export default {
           }
           for (const equipment of response.data.equipment) {
             this.selected.equipment.push(equipment)
-            tempEquipment.push(equipment.id)
+            tempEquipment.push(Number(equipment.id))
           }
           this.postForm.user = tempUser
           this.postForm.equipment = tempEquipment
