@@ -227,7 +227,7 @@ export default {
   created() {
     // 获取图表初始参数。
     this.experimentId = this.$route.query && this.$route.query.experimentId
-    this.interval = this.$route.query && this.$route.query.interval
+    // this.interval = this.$route.query && this.$route.query.interval
     // this.query.step = this.$route.query && this.$route.query.step
     this.equipmentId = this.$route.params && this.$route.params.equipmentId
     this.query.experiment = this.experimentId
@@ -240,21 +240,41 @@ export default {
     fetchData() {
       this.chart.showLoading()
       fetchData(this.equipmentId, this.query).then((response) => {
-        const tempSeries = []
-        response.data.forEach((element) => {
-          const series = {
-            name: element.abbreviation,
-            type: 'line',
-            smooth: true,
-            showSymbol: false,
-            // hoverAnimation: false,
-            data: []
-          }
-          element.data.forEach((i) => {
-            series.data.push([i.measured_time, i.value, element.unit])
-          })
-          tempSeries.push(series)
+        const tempSeries = [
+          {},
+          {
+            type: 'custom',
+            name: 'error',
+            itemStyle: {
+              normal: {
+                borderWidth: 1.5
+              }
+            },
+            renderItem: this.renderItem,
+            encode: {
+              x: 0,
+              y: [1, 2]
+            },
+            data: [],
+            z: 100
+          }]
+        const element = response.data
+        this.interval = [element.begin_time, element.end_time]
+        const series = {
+          name: element.abbreviation,
+          type: 'line',
+          smooth: true,
+          showSymbol: false,
+          // hoverAnimation: false,
+          data: []
+        }
+        element.data.forEach((i) => {
+          series.data.push([i[0], i[1], element.unit])
         })
+        tempSeries[0] = series
+
+        tempSeries[1].data = element.data
+
         this.series = tempSeries
         this.chart.hideLoading()
       })
@@ -288,6 +308,45 @@ export default {
     setPageTitle() {
       const title = 'Equipment Chart'
       document.title = `${title} - ${this.equipmentId}`
+    },
+    renderItem(params, api) {
+      var xValue = api.value(0)
+      var highPoint = api.coord([xValue, api.value(2)])
+      var lowPoint = api.coord([xValue, api.value(3)])
+      var halfWidth = api.size([1, 0])[0] * 0.1
+      var style = api.style({
+        stroke: api.visual('color'),
+        fill: null
+      })
+
+      return {
+        type: 'group',
+        children: [{
+          type: 'line',
+          transition: ['shape'],
+          shape: {
+            x1: highPoint[0] - halfWidth, y1: highPoint[1],
+            x2: highPoint[0] + halfWidth, y2: highPoint[1]
+          },
+          style: style
+        }, {
+          type: 'line',
+          transition: ['shape'],
+          shape: {
+            x1: highPoint[0], y1: highPoint[1],
+            x2: lowPoint[0], y2: lowPoint[1]
+          },
+          style: style
+        }, {
+          type: 'line',
+          transition: ['shape'],
+          shape: {
+            x1: lowPoint[0] - halfWidth, y1: lowPoint[1],
+            x2: lowPoint[0] + halfWidth, y2: lowPoint[1]
+          },
+          style: style
+        }]
+      }
     }
   }
 }
