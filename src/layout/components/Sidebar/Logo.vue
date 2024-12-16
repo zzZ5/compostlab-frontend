@@ -14,6 +14,8 @@
 </template>
 
 <script>
+import logo from '@/assets/logo_images/logo.svg'
+
 export default {
   name: 'SidebarLogo',
   props: {
@@ -25,7 +27,7 @@ export default {
   data() {
     return {
       title: 'Compost Lab',
-      logo: 'http://118.25.108.254/static/polls/img/nav.svg'
+      logo: logo
     }
   }
 }

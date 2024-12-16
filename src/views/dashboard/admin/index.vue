@@ -1,15 +1,18 @@
 <template>
   <div>
-    <img src="http://118.25.108.254/static/polls/img/nav.svg" class="emptyGif">
+    <!-- <img src="nav.svg" class="emptyGif"> -->
+    <img :src="logo" class="emptyGif">
   </div>
 </template>
 
 <script>
+import logo from '@/assets/logo_images/logo.svg'
 
 export default {
   name: 'DashboardAdmin',
   data() {
     return {
+      logo: logo
     }
   },
   methods: {
