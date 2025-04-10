@@ -174,8 +174,8 @@ export default {
       status: 'View',
       postForm: Object.assign({}, defaultForm),
       loading: false,
-      typeOptions: ['T', 'H', 'CO2'],
-      unitOptions: ['℃', '%', 'ppm'],
+      typeOptions: ['T', 'H', 'CO2', 'CO', 'O2', 'CH4', 'H2S'],
+      unitOptions: ['℃', '%', 'ppm', '%VOL', '%LEL'],
       rules: {
         name: [{ validator: validateRequire }],
         abbreviation: [{ validator: validateRequire }],

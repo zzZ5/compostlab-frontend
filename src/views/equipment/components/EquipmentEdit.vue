@@ -192,7 +192,7 @@ export default {
       sensorList: [],
       selectedSensor: [],
       loading: false,
-      typeOptions: ['RE'],
+      typeOptions: ['RE', 'CP'],
       rules: {
         name: [{ validator: validateRequire }],
         abbreviation: [{ validator: validateRequire }],
